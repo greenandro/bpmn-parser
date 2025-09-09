@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   targetNamespace="http://bpmn.io/schema/bpmn"
+                   id="Definitions_1">
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Début du processus">
+      <bpmn:outgoing>SequenceFlow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:userTask id="Task_User_Validate" name="Valider la demande">
+      <bpmn:incoming>SequenceFlow_1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_2</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="Task_User_Validate" />
+
+    <bpmn:serviceTask id="Task_Service_Notify" name="Notifier le système externe">
+      <bpmn:incoming>SequenceFlow_2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:sequenceFlow id="SequenceFlow_2" sourceRef="Task_User_Validate" targetRef="Task_Service_Notify" />
+
+    <bpmn:intermediateCatchEvent id="Event_WaitForSignal" name="Attendre la confirmation">
+      <bpmn:incoming>SequenceFlow_3</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_4</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="Signal_ConfirmationReceived" />
+    </bpmn:intermediateCatchEvent>
+
+    <bpmn:sequenceFlow id="SequenceFlow_3" sourceRef="Task_Service_Notify" targetRef="Event_WaitForSignal" />
+
+    <bpmn:endEvent id="EndEvent_1" name="Fin du processus">
+      <bpmn:incoming>SequenceFlow_4</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="SequenceFlow_4" sourceRef="Event_WaitForSignal" targetRef="EndEvent_1" />
+  </bpmn:process>
+
+  <bpmn:signal id="Signal_ConfirmationReceived" name="Confirmation Reçue" />
+
+</bpmn:definitions>
